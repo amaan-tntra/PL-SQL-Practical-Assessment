@@ -31,3 +31,41 @@ INSERT ALL
     INTO EMPLOYEE VALUES (19, 'Bhuvneshwar Kumar', 'HR', 50000, DATE '2023-07-01')
     INTO EMPLOYEE VALUES (20, 'Ruturaj Gaikwad', 'IT', 69000, DATE '2023-08-11')
 SELECT * FROM DUAL;
+
+-- UNDEFINE Department;   
+-- To reset the selected department
+
+DECLARE
+    v_dept VARCHAR2(50) := '&Department';
+
+    CURSOR emp_cur IS
+        SELECT EMP_ID, EMP_NAME, SALARY, JOINING_DATE
+        FROM EMPLOYEE
+        WHERE DEPARTMENT = v_dept;
+
+    v_emp_id EMPLOYEE.EMP_ID%TYPE;
+    v_emp_name EMPLOYEE.EMP_NAME%TYPE;
+    v_sal EMPLOYEE.SALARY%TYPE;
+    v_joining_date EMPLOYEE.JOINING_DATE%TYPE;
+    
+BEGIN
+    
+    DBMS_OUTPUT.PUT_LINE('Enter Department: ' || v_dept);
+
+    OPEN emp_cur;
+    LOOP
+        FETCH emp_cur INTO v_emp_id, v_emp_name, v_sal, v_joining_date;
+        EXIT WHEN emp_cur%NOTFOUND;
+
+            DBMS_OUTPUT.PUT_LINE(
+            'ID: ' || v_emp_id ||
+            ' | Name: ' || v_emp_name ||
+            ' | Salary: ' || v_sal ||
+            ' | Joined: ' || TO_CHAR(v_joining_date, 'DD-MON-YYYY')
+        );
+    END LOOP;
+    CLOSE emp_cur;
+
+END;
+
+/
