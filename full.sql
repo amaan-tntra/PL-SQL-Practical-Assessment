@@ -247,3 +247,58 @@ BEGIN
 END;
 
 /
+
+
+-- (6.) Formated OUTPUT
+
+ACCEPT Department;
+
+DECLARE
+    v_dept VARCHAR2(50) := '&Department';
+
+    CURSOR emp_cur IS
+        SELECT * 
+        FROM EMPLOYEE
+        WHERE DEPARTMENT = v_dept;
+
+    emp_rec emp_cur%ROWTYPE;
+
+    v_total NUMBER;
+
+    v_count NUMBER := 0;
+    emp_not_found EXCEPTION;
+
+BEGIN
+
+    v_total := GET_TOTAL_SALARY(v_dept);
+
+    OPEN emp_cur;
+    LOOP
+        FETCH emp_cur INTO emp_rec;
+        EXIT WHEN emp_cur%NOTFOUND;
+
+        v_count := v_count + 1;
+
+        print_employee_row(emp_rec);
+    END LOOP;
+
+    CLOSE emp_cur;
+
+    DBMS_OUTPUT.PUT_LINE('----------------------------------------');
+    DBMS_OUTPUT.PUT_LINE('Total salary for '|| v_dept || ' : ' || v_total);
+    DBMS_OUTPUT.PUT_LINE('Total Employees: ' || v_count);
+
+    IF v_count = 0 THEN
+        RAISE emp_not_found;
+    END IF;
+
+    EXCEPTION 
+        WHEN emp_not_found THEN
+            DBMS_OUTPUT.PUT_LINE('NO EMPLOYEE FOUND IN THIS DEPARTMENT');
+
+        WHEN OTHERS THEN 
+            DBMS_OUTPUT.PUT_LINE('Unexpected Error: ' || SQLERRM);
+
+END;
+
+/

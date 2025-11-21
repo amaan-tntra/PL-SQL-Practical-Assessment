@@ -62,10 +62,7 @@ DECLARE
 
 BEGIN
     
-    DBMS_OUTPUT.PUT_LINE('Enter Department: ' || v_dept);
-
     v_total := get_total_salary(v_dept);
-    DBMS_OUTPUT.PUT_LINE('Total Salary for ' || v_dept || ' is ' || v_total);
     OPEN emp_cur;
     LOOP
         FETCH emp_cur INTO emp_rec;
@@ -82,6 +79,10 @@ BEGIN
         print_employee_row(emp_rec);
     END LOOP;
     CLOSE emp_cur;
+      
+    DBMS_OUTPUT.PUT_LINE('----------------------------------------');
+    DBMS_OUTPUT.PUT_LINE('Total Salary for ' || v_dept || ' : ' || v_total);
+    DBMS_OUTPUT.PUT_LINE('Total Employees: ' || v_count);
 
     IF v_count = 0 THEN
         RAISE e_emp_not_found;
