@@ -35,6 +35,8 @@ SELECT * FROM DUAL;
 -- UNDEFINE Department;   
 -- To reset the selected department
 
+ACCEPT Department;
+--it will always ask user to input the department
 DECLARE
     v_dept VARCHAR2(50) := '&Department';
 
@@ -43,25 +45,29 @@ DECLARE
         FROM EMPLOYEE
         WHERE DEPARTMENT = v_dept;
 
-    v_emp_id EMPLOYEE.EMP_ID%TYPE;
-    v_emp_name EMPLOYEE.EMP_NAME%TYPE;
-    v_sal EMPLOYEE.SALARY%TYPE;
-    v_joining_date EMPLOYEE.JOINING_DATE%TYPE;
+-- No need for declaring variables when record is used
+    -- v_emp_id EMPLOYEE.EMP_ID%TYPE;
+    -- v_emp_name EMPLOYEE.EMP_NAME%TYPE;
+    -- v_sal EMPLOYEE.SALARY%TYPE;
+    -- v_joining_date EMPLOYEE.JOINING_DATE%TYPE;
     
+-- declaring a record 
+    emp_rec emp_cur%ROWTYPE;
+
 BEGIN
     
     DBMS_OUTPUT.PUT_LINE('Enter Department: ' || v_dept);
 
     OPEN emp_cur;
     LOOP
-        FETCH emp_cur INTO v_emp_id, v_emp_name, v_sal, v_joining_date;
+        FETCH emp_cur INTO emp_rec;
         EXIT WHEN emp_cur%NOTFOUND;
 
             DBMS_OUTPUT.PUT_LINE(
-            'ID: ' || v_emp_id ||
-            ' | Name: ' || v_emp_name ||
-            ' | Salary: ' || v_sal ||
-            ' | Joined: ' || TO_CHAR(v_joining_date, 'DD-MON-YYYY')
+            'ID: ' || emp_rec.EMP_ID ||
+            ' | Name: ' || emp_rec.EMP_NAME ||
+            ' | Salary: ' || emp_rec.SALARY ||
+            ' | Joined: ' || TO_CHAR(emp_rec.JOINING_DATE, 'DD-MON-YYYY')
         );
     END LOOP;
     CLOSE emp_cur;
