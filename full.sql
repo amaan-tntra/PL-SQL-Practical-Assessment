@@ -198,7 +198,7 @@ END;
 /
 
 
--- (5.) e_emp_not_found EXCEPTION
+-- (5.) e_emp_not_found EXCEPTION / OTHERS Exception
 
 ACCEPT Department;
 DECLARE
@@ -242,6 +242,8 @@ BEGIN
         WHEN e_emp_not_found THEN
             DBMS_OUTPUT.PUT_LINE('NO EMPLOYEE FOUND IN THIS DEPARTMENT');
 
+        WHEN OTHERS THEN 
+            DBMS_OUTPUT.PUT_LINE('Unexpected Error: ' || SQLERRM);
 END;
 
 /
