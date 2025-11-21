@@ -41,7 +41,7 @@ DECLARE
     v_dept VARCHAR2(50) := '&Department';
 
     CURSOR emp_cur IS
-        SELECT EMP_ID, EMP_NAME, SALARY, JOINING_DATE
+        SELECT * -- EMP_ID, EMP_NAME, SALARY, JOINING_DATE
         FROM EMPLOYEE
         WHERE DEPARTMENT = v_dept;
 
@@ -63,15 +63,24 @@ BEGIN
         FETCH emp_cur INTO emp_rec;
         EXIT WHEN emp_cur%NOTFOUND;
 
-            DBMS_OUTPUT.PUT_LINE(
-            'ID: ' || emp_rec.EMP_ID ||
-            ' | Name: ' || emp_rec.EMP_NAME ||
-            ' | Salary: ' || emp_rec.SALARY ||
-            ' | Joined: ' || TO_CHAR(emp_rec.JOINING_DATE, 'DD-MON-YYYY')
-        );
+        --     DBMS_OUTPUT.PUT_LINE(
+        --     'ID: ' || emp_rec.EMP_ID ||
+        --     ' | Name: ' || emp_rec.EMP_NAME ||
+        --     ' | Salary: ' || emp_rec.SALARY ||
+        --     ' | Joined: ' || TO_CHAR(emp_rec.JOINING_DATE, 'DD-MON-YYYY')
+        -- );
+        print_employee_row(emp_rec);
     END LOOP;
     CLOSE emp_cur;
 
 END;
 
+/
+
+CREATE OR REPLACE PROCEDURE print_employee_row(emp_rec IN employee%ROWTYPE)
+AS
+BEGIN
+    DBMS_OUTPUT.PUT_LINE(emp_rec.emp_id || ' - ' || emp_rec.emp_name || ' - ' || emp_rec.salary || ' - ' || TO_CHAR(emp_rec.joining_date, 'DD-MON-YYYY')
+    );
+END;
 /
