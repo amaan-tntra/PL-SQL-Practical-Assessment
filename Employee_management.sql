@@ -55,7 +55,11 @@ DECLARE
     emp_rec emp_cur%ROWTYPE;
 
     v_total NUMBER;
-    
+
+    v_count NUMBER := 0;
+
+    e_emp_not_found EXCEPTION;
+
 BEGIN
     
     DBMS_OUTPUT.PUT_LINE('Enter Department: ' || v_dept);
@@ -67,6 +71,8 @@ BEGIN
         FETCH emp_cur INTO emp_rec;
         EXIT WHEN emp_cur%NOTFOUND;
 
+        v_count := v_count + 1;
+
         --     DBMS_OUTPUT.PUT_LINE(
         --     'ID: ' || emp_rec.EMP_ID ||
         --     ' | Name: ' || emp_rec.EMP_NAME ||
@@ -76,6 +82,14 @@ BEGIN
         print_employee_row(emp_rec);
     END LOOP;
     CLOSE emp_cur;
+
+    IF v_count = 0 THEN
+        RAISE e_emp_not_found;
+    END IF;
+
+    EXCEPTION
+        WHEN e_emp_not_found THEN
+            DBMS_OUTPUT.PUT_LINE('NO EMPLOYEE FOUND IN THIS DEPARTMENT');
 
 END;
 

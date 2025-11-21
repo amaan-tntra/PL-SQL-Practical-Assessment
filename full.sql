@@ -198,3 +198,50 @@ END;
 /
 
 
+-- (5.) e_emp_not_found EXCEPTION
+
+ACCEPT Department;
+DECLARE
+    v_dept VARCHAR2(50) := '&Department';
+
+    CURSOR emp_cur IS
+        SELECT * 
+        FROM EMPLOYEE
+        WHERE DEPARTMENT = v_dept;
+
+    emp_rec emp_cur%ROWTYPE;
+
+    v_total NUMBER;
+
+    v_count NUMBER := 0;
+
+    e_emp_not_found EXCEPTION;
+
+BEGIN
+    
+    DBMS_OUTPUT.PUT_LINE('Enter Department: ' || v_dept);
+
+    v_total := get_total_salary(v_dept);
+    DBMS_OUTPUT.PUT_LINE('Total Salary for ' || v_dept || ' is ' || v_total);
+    OPEN emp_cur;
+    LOOP
+        FETCH emp_cur INTO emp_rec;
+        EXIT WHEN emp_cur%NOTFOUND;
+
+        v_count := v_count + 1;
+
+        print_employee_row(emp_rec);
+    END LOOP;
+    CLOSE emp_cur;
+
+    IF v_count = 0 THEN
+        RAISE e_emp_not_found;
+    END IF;
+
+    EXCEPTION
+        WHEN e_emp_not_found THEN
+            DBMS_OUTPUT.PUT_LINE('NO EMPLOYEE FOUND IN THIS DEPARTMENT');
+
+END;
+
+/
