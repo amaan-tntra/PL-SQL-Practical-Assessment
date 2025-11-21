@@ -54,10 +54,14 @@ DECLARE
 -- declaring a record 
     emp_rec emp_cur%ROWTYPE;
 
+    v_total NUMBER;
+    
 BEGIN
     
     DBMS_OUTPUT.PUT_LINE('Enter Department: ' || v_dept);
 
+    v_total := get_total_salary(v_dept);
+    DBMS_OUTPUT.PUT_LINE('Total Salary for ' || v_dept || ' is ' || v_total);
     OPEN emp_cur;
     LOOP
         FETCH emp_cur INTO emp_rec;
@@ -76,11 +80,26 @@ BEGIN
 END;
 
 /
-
+-- Procedure
 CREATE OR REPLACE PROCEDURE print_employee_row(emp_rec IN employee%ROWTYPE)
 AS
 BEGIN
     DBMS_OUTPUT.PUT_LINE(emp_rec.emp_id || ' - ' || emp_rec.emp_name || ' - ' || emp_rec.salary || ' - ' || TO_CHAR(emp_rec.joining_date, 'DD-MON-YYYY')
     );
+END;
+/
+
+--Function
+CREATE OR REPLACE FUNCTION get_total_salary(p_dept IN VARCHAR2)
+RETURN NUMBER
+AS
+    v_total_salary NUMBER;
+BEGIN
+    SELECT SUM(salary)
+    INTO v_total_salary
+    FROM employee
+    WHERE department = p_dept;
+
+    RETURN NVL(v_total_salary, 0);  
 END;
 /

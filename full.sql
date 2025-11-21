@@ -146,3 +146,55 @@ BEGIN
 END;
 
 /
+
+
+-- (4.) Create a Function
+
+CREATE OR REPLACE FUNCTION get_total_salary(p_dept IN VARCHAR2)
+RETURN NUMBER
+AS
+    v_total_salary NUMBER;
+BEGIN
+    SELECT SUM(salary)
+    INTO v_total_salary
+    FROM employee
+    WHERE department = p_dept;
+
+    RETURN NVL(v_total_salary, 0);  
+END;
+/
+
+
+ACCEPT Department;
+DECLARE
+    v_dept VARCHAR2(50) := '&Department';
+
+    CURSOR emp_cur IS
+        SELECT * 
+        FROM EMPLOYEE
+        WHERE DEPARTMENT = v_dept;
+
+    emp_rec emp_cur%ROWTYPE;
+
+    v_total NUMBER;
+BEGIN
+    
+    DBMS_OUTPUT.PUT_LINE('Enter Department: ' || v_dept);
+
+    v_total := GET_TOTAL_SALARY(v_dept);
+    DBMS_OUTPUT.PUT_LINE('Total salary for '|| v_dept || ' is ' || v_total);
+
+    OPEN emp_cur;
+    LOOP
+        FETCH emp_cur INTO emp_rec;
+        EXIT WHEN emp_cur%NOTFOUND;
+
+        print_employee_row(emp_rec);
+    END LOOP;
+    CLOSE emp_cur;
+
+END;
+
+/
+
+
